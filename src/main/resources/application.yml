@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5433/product-service-db"
+    username: "product-service-db-user"
+    password: "product-service-db-password"
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update

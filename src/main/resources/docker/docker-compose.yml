@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  pg:
+    image: postgres:latest
+    container_name: pg-local
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: "product-service-db"
+      POSTGRES_USER: "product-service-db-user"
+      POSTGRES_PASSWORD: "product-service-db-password"
