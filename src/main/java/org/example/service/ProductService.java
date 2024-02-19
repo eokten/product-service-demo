@@ -26,4 +26,28 @@ public class ProductService {
     public Optional<ProductDto> findProduct(Long id) {
         return productRepository.findById(id).map(productMapper::toDto);
     }
+
+    public ProductDto updateProduct(Long targetProductId, ProductDto source) {
+        Product targetProduct = productRepository
+                .findById(targetProductId)
+                .orElseThrow();
+
+        productMapper.updateProduct(targetProduct, source);
+
+        Product modifiedProduct = productRepository.save(targetProduct);
+
+        return productMapper.toDto(modifiedProduct);
+    }
+
+    public ProductDto patchProduct(Long targetProductId, ProductDto source) {
+        Product targetProduct = productRepository
+                .findById(targetProductId)
+                .orElseThrow();
+
+        productMapper.patchProduct(targetProduct, source);
+
+        Product modifiedProduct = productRepository.save(targetProduct);
+
+        return productMapper.toDto(modifiedProduct);
+    }
 }

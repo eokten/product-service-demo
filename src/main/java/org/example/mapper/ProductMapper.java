@@ -11,18 +11,15 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper
 public interface ProductMapper {
-
-    // target - field name in ProductDto (method return type)
-    // source - field name in Product (method argument type)
     @Mapping(target = "status", source = "quantity", qualifiedByName = "parseStatus")
     ProductDto toDto(Product product);
 
     Product fromDto(ProductDto productDto);
 
-    void updateProduct(ProductDto source, @MappingTarget Product target);
+    void updateProduct(@MappingTarget Product target, ProductDto source);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateProductPartially(ProductDto source, @MappingTarget Product target);
+    void patchProduct(@MappingTarget Product target, ProductDto source);
 
     @Named("parseStatus")
     default ProductDto.StatusEnum parseStatus(Integer quantity) {

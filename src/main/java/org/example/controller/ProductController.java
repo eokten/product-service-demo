@@ -25,5 +25,13 @@ public class ProductController implements ProductsApi {
         return ResponseEntity.ok(productService.createProduct(productDto));
     }
 
-    // other methods implementation...
+    @Override
+    public ResponseEntity<ProductDto> modifyProduct(Long id, ProductDto productDto) {
+        return ProductsApi.super.modifyProduct(id, productDto);
+    }
+
+    @Override
+    public ResponseEntity<ProductDto> modifyProductPartially(Long id, ProductDto productDto) {
+        return ProductsApi.super.modifyProductPartially(id, productDto);
+    }
 }
