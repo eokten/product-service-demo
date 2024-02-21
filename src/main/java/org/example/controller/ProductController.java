@@ -1,16 +1,19 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.example.rest.controller.ProductsApi;
 import org.example.rest.model.ProductDto;
 import org.example.service.ProductService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class ProductController implements ProductsApi {
 
     private final ProductService productService;
@@ -25,13 +28,20 @@ public class ProductController implements ProductsApi {
         return ResponseEntity.ok(productService.createProduct(productDto));
     }
 
+    @SneakyThrows
+    @Override
+    public ResponseEntity<List<ProductDto>> getProducts() {
+        Thread.sleep(20000); // simulate a lot of work
+        return ResponseEntity.ok(productService.getProducts());
+    }
+
     @Override
     public ResponseEntity<ProductDto> modifyProduct(Long id, ProductDto productDto) {
-        return ProductsApi.super.modifyProduct(id, productDto);
+        return ResponseEntity.ok(productService.updateProduct(id, productDto));
     }
 
     @Override
     public ResponseEntity<ProductDto> modifyProductPartially(Long id, ProductDto productDto) {
-        return ProductsApi.super.modifyProductPartially(id, productDto);
+        return ResponseEntity.ok(productService.patchProduct(id, productDto));
     }
 }

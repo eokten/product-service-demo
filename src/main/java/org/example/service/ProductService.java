@@ -7,6 +7,7 @@ import org.example.repository.ProductRepository;
 import org.example.rest.model.ProductDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,14 @@ public class ProductService {
 
     public Optional<ProductDto> findProduct(Long id) {
         return productRepository.findById(id).map(productMapper::toDto);
+    }
+
+    public List<ProductDto> getProducts() {
+        return productRepository
+                .findAll()
+                .stream()
+                .map(productMapper::toDto)
+                .toList();
     }
 
     public ProductDto updateProduct(Long targetProductId, ProductDto source) {

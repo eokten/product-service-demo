@@ -8,7 +8,7 @@ info:
   # API-first design
 
 servers:
-  - url: https://localhost:8080/api/v1
+  - url: http://localhost:8080/api/v1
 
 tags:
   - name: product
@@ -16,6 +16,8 @@ tags:
 paths:
   "/products":
     get:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Get all products"
@@ -27,6 +29,8 @@ paths:
         '400':
           description: Invalid request
     post:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Create product"
@@ -42,6 +46,8 @@ paths:
           description: Validation exception
   "/products/{id}":
     get:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Get specific product"
@@ -61,6 +67,8 @@ paths:
         '400':
           description: Invalid request
     put:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Modify specific product"
@@ -84,6 +92,8 @@ paths:
         '422':
           description: Validation exception
     patch:
+      security:
+        - BearerAuth: []
       tags:
         - product
       summary: "Modify specific product partially"
@@ -108,6 +118,12 @@ paths:
           description: Validation exception
 
 components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     Product:
       type: object
