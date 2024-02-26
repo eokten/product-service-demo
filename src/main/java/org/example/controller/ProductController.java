@@ -31,7 +31,6 @@ public class ProductController implements ProductsApi {
     @SneakyThrows
     @Override
     public ResponseEntity<List<ProductDto>> getProducts() {
-        Thread.sleep(20000); // simulate a lot of work
         return ResponseEntity.ok(productService.getProducts());
     }
 
