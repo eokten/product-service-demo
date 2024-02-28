@@ -38,3 +38,17 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - "38080:8080"
+    environment:
+      - "KAFKA_CLUSTERS_0_NAME=local"
+      - "KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=broker:29092"
+      - "KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181"
+    volumes:
+      - "./kafka_ui:/etc/kafkaui"
+    depends_on:
+      - broker

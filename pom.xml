@@ -35,6 +35,11 @@
             ${project.basedir}/src/main/resources/specification/product-service.openapi.yml
         </product-service-openapi-spec.path>
         <api-package>org.example.rest</api-package>
+
+        <zenwave.version>1.4.1</zenwave.version>
+        <product-service-asyncapi-spec.path>
+            ${pom.basedir}/src/main/resources/specification/product-service.asyncapi.yml
+        </product-service-asyncapi-spec.path>
     </properties>
 
     <dependencies>
@@ -69,9 +74,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-kafka</artifactId>
+            <version>4.1.0</version>
         </dependency>
 
         <dependency>
@@ -164,6 +171,64 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>io.github.zenwave360.zenwave-sdk</groupId>
+                <artifactId>zenwave-sdk-maven-plugin</artifactId>
+                <version>${zenwave.version}</version>
+                <configuration>
+                    <addCompileSourceRoot>true</addCompileSourceRoot>
+                    <addTestCompileSourceRoot>true</addTestCompileSourceRoot>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>generate-asyncapi-dtos</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatorName>jsonschema2pojo</generatorName>
+                            <inputSpec>${product-service-asyncapi-spec.path}</inputSpec>
+                            <configOptions>
+                                <modelPackage>org.example.event.model</modelPackage>
+                                <jsonschema2pojo.useJakartaValidation>true</jsonschema2pojo.useJakartaValidation>
+                                <jsonschema2pojo.includeJsr303Annotations>false</jsonschema2pojo.includeJsr303Annotations>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-asyncapi</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <generatorName>spring-cloud-streams3</generatorName>
+                            <inputSpec>${product-service-asyncapi-spec.path}</inputSpec>
+                            <configOptions>
+                                <role>provider</role>
+                                <style>imperative</style>
+                                <apiPackage>org.example.event.api</apiPackage>
+                                <modelPackage>org.example.event.model</modelPackage>
+                                <operationIds>sendProductCreated</operationIds>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
+                        <artifactId>asyncapi-spring-cloud-streams3</artifactId>
+                        <version>${zenwave.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>io.github.zenwave360.zenwave-sdk.plugins</groupId>
+                        <artifactId>asyncapi-jsonschema2pojo</artifactId>
+                        <version>${zenwave.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

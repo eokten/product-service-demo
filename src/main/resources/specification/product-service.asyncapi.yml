@@ -1,0 +1,85 @@
+asyncapi: 3.0.0
+info:
+  title: Product Service Kafka API
+  version: 1.0.0
+  description: |-
+    The API allows to interact with product events
+
+defaultContentType: application/json
+
+servers:
+  dev:
+    host: localhost:9092
+    protocol: kafka
+    description: Development Kafka broker
+
+channels:
+  productEvents:
+    address: productservice.product.create.v1
+    messages:
+      ProductCreated:
+        $ref: '#/components/messages/ProductCreated'
+    description: The topic on which product created events may be produced and consumed.
+operations:
+  sendProductCreated:
+    action: send
+    channel:
+      $ref: '#/channels/productEvents'
+    tags:
+      - name: Product
+    summary: Produce product created event
+    traits:
+      - $ref: '#/components/operationTraits/kafka'
+    messages:
+      - $ref: '#/channels/productEvents/messages/ProductCreated'
+  onProductCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/productEvents'
+    tags:
+      - name: Product
+    summary: >-
+      Consume product created event
+    traits:
+      - $ref: '#/components/operationTraits/kafka'
+    messages:
+      - $ref: '#/channels/productEvents/messages/ProductCreated'
+components:
+  messages:
+    ProductCreated:
+      name: productCreated
+      title: Product created
+      summary: Product data
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/ProductCreatedPayload'
+  schemas:
+    ProductCreatedPayload:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+          description: Created product id
+        productType:
+          type: string
+          description: Created product type
+  messageTraits:
+    commonHeaders:
+      headers:
+        type: object
+        properties:
+          dummy-header:
+            type: integer
+            minimum: 0
+            maximum: 100
+  operationTraits:
+    kafka:
+      bindings:
+        kafka:
+          clientId:
+            type: string
+            enum:
+              - dummy-id

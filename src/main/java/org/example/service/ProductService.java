@@ -2,6 +2,8 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.entity.Product;
+import org.example.event.api.IProductEventsProducer;
+import org.example.event.model.ProductCreatedPayload;
 import org.example.mapper.ProductMapper;
 import org.example.repository.ProductRepository;
 import org.example.rest.model.ProductDto;
@@ -18,9 +20,15 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final IProductEventsProducer productEventsProducer;
+
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productMapper.fromDto(productDto);
         Product createdProduct = productRepository.save(product);
+        ProductCreatedPayload payload = new ProductCreatedPayload();
+        payload.setProductId(Math.toIntExact(createdProduct.getId()));
+        payload.setProductType("dummy product type");
+        productEventsProducer.sendProductCreated(payload);
         return productMapper.toDto(createdProduct);
     }
 

@@ -7,14 +7,15 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  kafka:
-    consumer:
-      topic: order-creation-events
-      bootstrap-servers: localhost:9092
-      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: '*'
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost
+          defaultBrokerPort: 9092
+      bindings:
+        send-product-created-out-0:
+          destination: productservice.product.created.v1
 
 auth:
   issuers:
