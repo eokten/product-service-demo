@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - property:
+      name: "price.type"
+      value: "decimal"
+      dbms: "mysql"
+  - property:
+      name: "price.type"
+      value: "numeric"
+      dbms: "postgresql"
+  - include: "db/changelog/changes"
+  - changeSet:
+      id: "1.0.0"
+      author: "eokten"
+      dbms: "mysql"
+      changes:
+        - createSequence:
+            sequenceName: "products_seq"
+        - createTable:
+            tableName: "product"
+            columns:
+              - column:
+                  name: "id"
+                  type: "bigint"
+                  constraints:
+                    primary: true
+                  defaultValueSequenceNext: "products_seq"
+              - column:
+                  name: "name"
+                  type: "text"
+              - column:
+                  name: "description"
+                  type: "text"
+              - column:
+                  name: "price"
+                  type: ${price.type}
+              - column:
+                  name: "quantity"
+                  type: "int"
+  - changeSet:
+      id: "1.0.1"
+      author: "eokten"
+      dbms: "postgresql"
+      changes:
+        - sqlFile:
+            path: "classpath:/db/changelog/changes/product-table.sql"
+  - changeSet:
+      id: "1.0.2"
+      author: "eokten"
+      dbms: "postgresql"
+      changes:
+        - addColumn:
+            tableName: "product"
+            column:
+              name: "quantity"
+              type: "int"
